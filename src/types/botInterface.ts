@@ -186,8 +186,12 @@ export interface GuardianGuildInterface extends DiscordGuild {
     resolveRole: (search: string) => Promise<Role | null>;
 }
 
-export interface GuardianMessageInterface extends DiscordMessage {
+export interface GuardianMessageInterface extends GuardianMessagePreInterface {
     author: UGuard;
     guild: GuardianGuildInterface;
     channel: GuardianDMChannelInterface | GuardianNewsChannelInterface | GuardianTextChannelInterface;
+}
+
+export interface GuardianMessagePreInterface extends DiscordMessage {
+    getTrad: (value: string, ...args: IObjectKeys[]) => Promise<string>;
 }

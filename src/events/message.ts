@@ -6,7 +6,7 @@ import { GenericResponse } from '../utils/GenericResponse';
  * Message Event
  */
 export default class Message implements GuardianEvent {
-    private guardian: GuardianBot;
+    private readonly guardian: GuardianBot;
 
     constructor(guardian: GuardianBot) {
         this.guardian = guardian;
@@ -22,20 +22,20 @@ export default class Message implements GuardianEvent {
         if (msg.content.match(new RegExp(`^<@!?${this.guardian.user?.id}>( |)$`))) {
             if (msg.guild) {
                 await msg.channel
-                    .send(
-                        !(await msg.author.isDefaultLocal())
-                            ? await msg.author.getTrad('PREFIX_INFO', { prefix: msg.guild.getPrefix() })
-                            : await msg.guild.getTrad('PREFIX_INFO', { prefix: msg.guild.getPrefix() }),
-                    )
+                    .send(await msg.getTrad('PREFIX_INFO', { prefix: msg.guild.getPrefix() }))
                     .catch((e) => {
                         if (this.guardian.debugMode) {
-                            this.guardian.logger.error(`Unable to Send message : ${e.message}\n${e.stack}`);
+                            this.guardian.logger.error(
+                                `Unable to Send message in ${msg.channel.type} : ${e.message}\n${e.stack}`,
+                            );
                         }
                     });
             } else {
-                await msg.channel.send(await msg.author.getTrad('PREFIX_DM', { prefix: 'g!' })).catch((e) => {
+                await msg.channel.send(await msg.getTrad('PREFIX_DM', { prefix: 'g!' })).catch((e) => {
                     if (this.guardian.debugMode) {
-                        this.guardian.logger.error(`Unable to Send message : ${e.message}\n${e.stack}`);
+                        this.guardian.logger.error(
+                            `Unable to Send message in ${msg.channel.type} : ${e.message}\n${e.stack}`,
+                        );
                     }
                 });
             }
@@ -71,9 +71,11 @@ export default class Message implements GuardianEvent {
         if (!cmd.config.activate) return;
         // if cmd is run in DM and can run only in guild
         if (cmd.config.guildOnly && !msg.guild) {
-            await msg.channel.send(await msg.author.getTrad('ERR_GUILD_ONLY')).catch((e) => {
+            await msg.channel.send(await msg.getTrad('ERR_GUILD_ONLY')).catch((e) => {
                 if (this.guardian.debugMode) {
-                    this.guardian.logger.error(`Unable to Send message in DM : ${e.message}\n${e.stack}`);
+                    this.guardian.logger.error(
+                        `Unable to Send message in ${msg.channel.type} : ${e.message}\n${e.stack}`,
+                    );
                 }
             });
             return;
@@ -81,17 +83,13 @@ export default class Message implements GuardianEvent {
 
         // if cmd is run in guild but is require only in DM
         if (cmd.config.dmOnly && msg.channel.type !== 'dm') {
-            await msg.channel
-                .send(
-                    !(await msg.author.isDefaultLocal())
-                        ? await msg.author.getTrad('ERR_DM_ONLY')
-                        : await msg.guild.getTrad('ERR_DM_ONLY'),
-                )
-                .catch((e) => {
-                    if (this.guardian.debugMode) {
-                        this.guardian.logger.error(`Unable to Send message in Guild : ${e.message}\n${e.stack}`);
-                    }
-                });
+            await msg.channel.send(await msg.getTrad('ERR_DM_ONLY')).catch((e) => {
+                if (this.guardian.debugMode) {
+                    this.guardian.logger.error(
+                        `Unable to Send message in ${msg.channel.type} : ${e.message}\n${e.stack}`,
+                    );
+                }
+            });
             return;
         }
 
@@ -101,9 +99,11 @@ export default class Message implements GuardianEvent {
          * cmd nsfw can't run in DM don't forget that
          */
         if (cmd.config.nsfw && !(msg.channel instanceof DMChannel) && msg.channel.nsfw) {
-            await msg.channel.send(await msg.guild.getTrad('ERR_GUILD_NSFW_ONLY')).catch((e) => {
+            await msg.channel.send(await msg.getTrad('ERR_GUILD_NSFW_ONLY')).catch((e) => {
                 if (this.guardian.debugMode) {
-                    this.guardian.logger.error(`Unable to Send message in Guild : ${e.message}\n${e.stack}`);
+                    this.guardian.logger.error(
+                        `Unable to Send message in ${msg.channel.type} : ${e.message}\n${e.stack}`,
+                    );
                 }
             });
             return;
@@ -114,23 +114,13 @@ export default class Message implements GuardianEvent {
          */
         if (cmd.config.ownerOnly && !msg.author.isDev) {
             if (!msg.guild) {
-                await msg.channel.send(await msg.author.getTrad('ERR_USER_NOT_DEV')).catch((e) => {
+                await msg.channel.send(await msg.getTrad('ERR_USER_NOT_DEV')).catch((e) => {
                     if (this.guardian.debugMode) {
-                        this.guardian.logger.error(`Unable to Send message in DM : ${e.message}\n${e.stack}`);
+                        this.guardian.logger.error(
+                            `Unable to Send message in ${msg.channel.type} : ${e.message}\n${e.stack}`,
+                        );
                     }
                 });
-            } else {
-                await msg.channel
-                    .send(
-                        !(await msg.author.isDefaultLocal())
-                            ? await msg.author.getTrad('ERR_DM_ONLY')
-                            : await msg.guild.getTrad('ERR_USER_NOT_DEV'),
-                    )
-                    .catch((e) => {
-                        if (this.guardian.debugMode) {
-                            this.guardian.logger.error(`Unable to Send message in Guild : ${e.message}\n${e.stack}`);
-                        }
-                    });
             }
             return;
         }
@@ -149,16 +139,7 @@ export default class Message implements GuardianEvent {
                 );
             }
             //return error
-            await GenericResponse(
-                msg.channel,
-                msg.guild !== undefined && !(await msg.author.isDefaultLocal()),
-                msg.author,
-                msg.guild,
-                this.guardian,
-                e,
-                msg.channel.type,
-                false,
-            );
+            await GenericResponse(msg, this.guardian, e);
         });
     };
 }

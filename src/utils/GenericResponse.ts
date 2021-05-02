@@ -1,32 +1,18 @@
-import {
-    GuardianBot,
-    GuardianDMChannelInterface,
-    GuardianGuildInterface,
-    GuardianNewsChannelInterface,
-    GuardianTextChannelInterface,
-} from 'botInterface';
-import { UGuard } from 'extendType';
+import { GuardianBot, GuardianMessageInterface } from 'botInterface';
 
 /**
  * Show the default error to view
  */
 export const GenericResponse = async (
-    channel: GuardianDMChannelInterface | GuardianNewsChannelInterface | GuardianTextChannelInterface,
-    isLocal: boolean,
-    author: UGuard,
-    guild: GuardianGuildInterface,
+    msg: GuardianMessageInterface,
     client: GuardianBot,
     e: Error,
-    type = 'Guild',
-    showError = true, // for disable message if want overwrite with other message like message Event
+    showError = false,
 ): Promise<void> => {
-    await channel.error(
-        isLocal ? await guild.getTrad('GENERIC_ERROR_CONTENT') : await author.getTrad('GENERIC_ERROR_CONTENT'),
-        isLocal ? await guild.getTrad('GENERIC_ERROR_TITLE') : await author.getTrad('GENERIC_ERROR_TITLE'),
-    );
+    await msg.channel.error(await msg.getTrad('GENERIC_ERROR_CONTENT'), await msg.getTrad('GENERIC_ERROR_TITLE'));
     // if error return to channel the error
 
     if (client.debugMode && showError) {
-        client.logger.error(`[${type}] Unable to Send message : ${e.message}\n${e.stack}`);
+        client.logger.error(`[${msg.channel.type}] Unable to Send message : ${e.message}\n${e.stack}`);
     }
 };
