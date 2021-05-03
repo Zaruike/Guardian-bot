@@ -1,5 +1,10 @@
 import { TextChannel as DTextChannel, MessageEmbed } from 'discord.js';
-import { GuardianBot, GuardianGuildInterface, GuardianTextChannelInterface } from 'botInterface';
+import {
+    GuardianBot,
+    GuardianGuildInterface,
+    GuardianMessageInterface,
+    GuardianTextChannelInterface,
+} from 'botInterface';
 
 export const extendsTextChannel = (TextChannel: typeof DTextChannel): typeof DTextChannel => {
     class GuardianTextChannel extends TextChannel implements GuardianTextChannelInterface {
@@ -10,7 +15,7 @@ export const extendsTextChannel = (TextChannel: typeof DTextChannel): typeof DTe
         /**
          * Send error to view
          */
-        public error(text: string, title?: string): void {
+        public error(msg: GuardianMessageInterface, text: string, title?: string): void {
             const embed = new MessageEmbed().setColor('RED').setTimestamp();
             if (title !== undefined && title.length > 0) {
                 embed.setTitle(title);

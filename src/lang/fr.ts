@@ -37,6 +37,7 @@ export default class FR implements LangInterface {
             VIEW_AUDIT_LOG: `Afficher le journal d'audit`,
         };
         this._cat = {
+            dev: "Toutes les commandes liés au développement d'un bot ou à la programmation",
             misc: 'Toutes les commandes diverses pour vous aider à gérer votre serveur',
         };
         this._heading = [
@@ -53,10 +54,14 @@ export default class FR implements LangInterface {
             CMD_FOOTER: `Syntaxe: [] = obligatoire, <> = facultatif`,
             CMD_NO_ALIASES: `Aucun alias`,
             CMD_OWNER_ONLY: `Owner seulement`,
+            COOLDOWN_CMD: (t) => `Veuillez réessayer dans ${this.convertMs(Number(t.time))}`,
             ERR_DM_ONLY: `Cette commande ne peut être exécutée que dans les messages privés`,
+            ERR_USER_NOT_DEV: `Seul les propriétaires du bot peuvent exécuter cette commande`,
             ERR_GUILD_NSFW_ONLY: `Cette commande ne peut être exécutée que dans un channel NSFW`,
             ERR_GUILD_ONLY: `Cette commande ne peut être exécutée que sur un serveur`,
-            COOLDOWN_CMD: (t) => `Veuillez réessayer dans ${this.convertMs(Number(t.time))}`,
+            EVALUATED_INPUT: `:inbox_tray: Input`,
+            EVALUATED_OUTPUT: `:outbox_tray: Output`,
+            EVALUATED_TIME: (e) => `Évalué en \`${e.time}\`ms`,
             GENERIC_ERROR_CONTENT: `Une erreur inconnu est survenu`,
             GENERIC_ERROR_TITLE: `Une erreur s'est produite`,
             GET_CATEGORIE: (c) => `Catégorie ${c.cat}`,

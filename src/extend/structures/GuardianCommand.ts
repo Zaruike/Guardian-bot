@@ -144,6 +144,7 @@ export default abstract class GuardianCommand implements GuardianCommandInterfac
                         //send simple string if can't send a embed
                         if (missingPerm.includes('EMBED_LINKS')) {
                             await msg.channel.error(
+                                msg,
                                 isDefaultLocal
                                     ? await msg.guild.getTrad('MISSING_PERMISSIONS', { p: permToHumanString })
                                     : await msg.author.getTrad('MISSING_PERMISSIONS', { p: permToHumanString }),

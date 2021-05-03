@@ -48,16 +48,21 @@ export default class EN implements LangInterface {
             VIEW_AUDIT_LOG: 'View Audit Log',
         };
         this._cat = {
+            dev: 'All commands related to bot development or programming',
             misc: 'All the miscellaneous commands to help you manage your server',
         };
         this.lang = {
             CMD_FOOTER: `Syntax: [] = required, <> = optional`,
             CMD_NO_ALIASES: `No aliases`,
             CMD_OWNER_ONLY: `Owner only`,
+            COOLDOWN_CMD: (t) => `Please retry in ${this.convertMs(Number(t.time))}`,
             ERR_DM_ONLY: `This command can only be executed in private messages`,
             ERR_GUILD_NSFW_ONLY: `This command can only be executed in an NSFW channel`,
             ERR_GUILD_ONLY: `This command can only be executed in a server`,
-            COOLDOWN_CMD: (t) => `Please retry in ${this.convertMs(Number(t.time))}`,
+            ERR_USER_NOT_DEV: `Only bot owners can run this command`,
+            EVALUATED_INPUT: `:inbox_tray: Input`,
+            EVALUATED_OUTPUT: `:outbox_tray: Output`,
+            EVALUATED_TIME: (e) => `Evaluated in \`${e.time}\`ms`,
             GENERIC_ERROR_CONTENT: `An unknown error has occurred`,
             GENERIC_ERROR_TITLE: `An error occurred`,
             GET_CATEGORIE: (c) => `${c.cat} category`,

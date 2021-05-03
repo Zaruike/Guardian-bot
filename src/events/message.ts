@@ -99,13 +99,7 @@ export default class Message implements GuardianEvent {
          * cmd nsfw can't run in DM don't forget that
          */
         if (cmd.config.nsfw && !(msg.channel instanceof DMChannel) && msg.channel.nsfw) {
-            await msg.channel.send(await msg.getTrad('ERR_GUILD_NSFW_ONLY')).catch((e) => {
-                if (this.guardian.debugMode) {
-                    this.guardian.logger.error(
-                        `Unable to Send message in ${msg.channel.type} : ${e.message}\n${e.stack}`,
-                    );
-                }
-            });
+            await msg.channel.error(msg, await msg.getTrad('ERR_GUILD_NSFW_ONLY'));
             return;
         }
 
@@ -113,15 +107,7 @@ export default class Message implements GuardianEvent {
          * Check if this command is for owner only and if the user is dev to run this cmd else return message to user
          */
         if (cmd.config.ownerOnly && !msg.author.isDev) {
-            if (!msg.guild) {
-                await msg.channel.send(await msg.getTrad('ERR_USER_NOT_DEV')).catch((e) => {
-                    if (this.guardian.debugMode) {
-                        this.guardian.logger.error(
-                            `Unable to Send message in ${msg.channel.type} : ${e.message}\n${e.stack}`,
-                        );
-                    }
-                });
-            }
+            await msg.channel.error(msg, await msg.getTrad('ERR_USER_NOT_DEV'));
             return;
         }
 

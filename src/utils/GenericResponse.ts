@@ -7,9 +7,9 @@ export const GenericResponse = async (
     msg: GuardianMessageInterface,
     client: GuardianBot,
     e: Error,
-    showError = false,
+    showError = true,
 ): Promise<void> => {
-    await msg.channel.error(await msg.getTrad('GENERIC_ERROR_CONTENT'), await msg.getTrad('GENERIC_ERROR_TITLE'));
+    await msg.channel.error(msg, await msg.getTrad('GENERIC_ERROR_CONTENT'), await msg.getTrad('GENERIC_ERROR_TITLE'));
     // if error return to channel the error
 
     if (client.debugMode && showError) {

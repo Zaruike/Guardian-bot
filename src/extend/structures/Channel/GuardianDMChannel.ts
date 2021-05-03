@@ -1,5 +1,6 @@
 import { DMChannel as DDMChannel, MessageEmbed } from 'discord.js';
-import { GuardianBot, GuardianDMChannelInterface } from 'botInterface';
+import { GuardianBot, GuardianDMChannelInterface, GuardianMessageInterface } from 'botInterface';
+import { GenericResponse } from '../../../utils/GenericResponse';
 
 export const extendsDMChannel = (DMChannel: typeof DDMChannel): typeof DDMChannel => {
     class GuardianDMChannel extends DMChannel implements GuardianDMChannelInterface {
@@ -10,7 +11,7 @@ export const extendsDMChannel = (DMChannel: typeof DDMChannel): typeof DDMChanne
         /**
          * Send error to view
          */
-        public error(text: string, title?: string): void {
+        public error(msg: GuardianMessageInterface, text: string, title?: string): void {
             const embed = new MessageEmbed().setColor('RED').setTimestamp();
             if (title !== undefined && title.length > 0) {
                 embed.setTitle(title);
@@ -22,12 +23,7 @@ export const extendsDMChannel = (DMChannel: typeof DDMChannel): typeof DDMChanne
                 //return null and no error
                 return;
             }
-            this.send(embed).catch((e) => {
-                const cl = this.client as GuardianBot;
-                if (cl.debugMode) {
-                    cl.logger.error(`Unable to send message to DM with reason : ${e.message}\n${e.stack}`);
-                }
-            });
+            this.send(embed).catch((e) => GenericResponse(msg, this.client as GuardianBot, e));
             return;
         }
     }

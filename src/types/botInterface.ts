@@ -165,15 +165,15 @@ export interface GuardianCommandOptions {
 }
 
 export interface GuardianDMChannelInterface extends DMChannel {
-    error: (text: string, title?: string) => void;
+    error: (msg: GuardianMessageInterface, text: string, title?: string) => void;
 }
 
 export interface GuardianNewsChannelInterface extends NewsChannel {
-    error: (text: string, title?: string) => void;
+    error: (msg: GuardianMessageInterface, text: string, title?: string) => void;
 }
 
 export interface GuardianTextChannelInterface extends TextChannel {
-    error: (text: string, title?: string) => void;
+    error: (msg: GuardianMessageInterface, text: string, title?: string) => void;
 }
 
 export interface GuardianGuildInterface extends DiscordGuild {
